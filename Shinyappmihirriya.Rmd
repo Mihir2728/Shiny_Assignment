@@ -85,7 +85,8 @@ ui <- dashboardPage(
   dashboardHeader(title = "Digitalis Randomized, Double-blind, Multicenter Trial", titleWidth = 550),
   dashboardSidebar(
     selectInput(inputId = "Treatment", label = "Select Participants Treatment", choices = c("Placebo", "Digoxin"), multiple = FALSE),
-    radioButtons(inputId = "Sex", label = "Participant's Gender", choices = c("Male", "Female"))
+    radioButtons(inputId = "Sex", label = "Participant's Gender", choices = c("Male", "Female")),
+    sliderInput(inputId = "Bmi", "Body Mass Index range:", min = 13, max = 50, value = c(15, 45))
   ),
   dashboardBody()
 )
