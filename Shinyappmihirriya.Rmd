@@ -166,6 +166,25 @@ server <- function(input, output) {
   output$table1 <- renderDataTable({
     df_sub()
   })
+# heatmap (explore)  
+  output$corrPlot <- renderPlot({
+    d <- df_sub()
+    
+    num_df <- d[, sapply(d, is.numeric)] #only numeric columns
+    
+    req(ncol(num_df) > 1) #need at least 2 numeric vars
+    
+    corr <- cor(num_df, use = "pairwise.complete.obs")
+    corr_melt <- melt(corr)
+    
+    ggplot(corr_melt, aes(Var1, Var2, fill = value)) +
+      geom_tile() +
+      scale_fill_gradient2(
+        low = "blue", high = "red", mid = "white",
+        midpoint = 0, limit = c(-1,1), name = "Correlation"
+      ) +
+      theme_minimal()
+  })
 }
 
 shinyApp(ui = ui, server = server)
