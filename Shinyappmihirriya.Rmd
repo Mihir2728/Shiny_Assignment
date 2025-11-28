@@ -61,10 +61,12 @@ if (!require("janitor")) install.packages("janitor")
 if (!require("tidyverse")) install.packages("tidyverse")
 if (!require("lubridate")) install.packages("lubridate")
 if (!require("shinydashboard")) install.packages("shinydashboard")
+if (!require("shiny")) install.packages("shiny")
 
 library(tidyverse)
 library(janitor)
 library(lubridate)
+library(shiny)
 library(shinydashboard)
 ```
 
@@ -75,6 +77,9 @@ df
 ```
 
 ```{r}
+
+
+
 
 ```
 
