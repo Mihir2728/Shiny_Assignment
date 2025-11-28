@@ -113,6 +113,12 @@ ui <- dashboardPage(
     
 
 server <- function(input, output) {
+  df_sub <- reactive({
+    df %>%
+      filter(Treatment == input$Treatment) %>%
+      filter(Sex == input$Sex) %>%
+      filter(bmi == input$bmi)
+    }) 
   
 }
 
