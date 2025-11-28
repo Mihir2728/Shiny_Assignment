@@ -77,10 +77,20 @@ df
 ```
 
 ```{r}
+ui <- dashboardPage(
+  dashboardHeader(title = "Digitalis Randomized, Double-blind, Multicenter Trial", titleWidth = 550),
+  dashboardSidebar(),
+  dashboardBody(
+    
+  )
+)
 
 
+server <- function(input, output) {
+  
+}
 
-
+shinyApp(ui, server)
 ```
 
 ```{r}
