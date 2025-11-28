@@ -68,3 +68,17 @@ library(lubridate)
 library(shinydashboard)
 ```
 
+```{r}
+df <- read.csv("DIG.csv") %>%
+  janitor::clean_names()
+df
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
