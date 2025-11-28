@@ -74,17 +74,21 @@ library(shinydashboard)
 df <- read.csv("DIG.csv") %>%
   janitor::clean_names()
 df
+
+head(df)
 ```
 
+
 ```{r}
+library(shinydashboard)
 ui <- dashboardPage(
   dashboardHeader(title = "Digitalis Randomized, Double-blind, Multicenter Trial", titleWidth = 550),
-  dashboardSidebar(),
-  dashboardBody(
-    
-  )
+  dashboardSidebar(
+    selectInput(inputId = "Treatment", label = "Select Participants Treatment", choices = c("Placebo", "Digoxin"), multiple = FALSE)
+  ),
+  dashboardBody()
 )
-
+    
 
 server <- function(input, output) {
   
@@ -92,6 +96,9 @@ server <- function(input, output) {
 
 shinyApp(ui, server)
 ```
+
+
+
 
 ```{r}
 
