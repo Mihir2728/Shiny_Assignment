@@ -102,6 +102,11 @@ ui <- dashboardPage(
   dashboardHeader(title = "Digitalis Randomized, Double-blind, Multicenter Trial", titleWidth = 550),
   
   dashboardSidebar(
+    sidebarMenu(
+      menuItem("Main", tabName = "main", icon = icon("dashboard")),
+      menuItem("Explore", tabName = "explore", icon = icon("chart-bar"))
+    ),
+    
     selectInput(inputId = "Treatment", label = "Select Participants Treatment", choices = c("Placebo", "Digoxin"), multiple = FALSE),
     
     radioButtons(inputId = "Sex", label = "Participant's Gender", choices = c("Male", "Female")),
