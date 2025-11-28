@@ -115,10 +115,30 @@ ui <- dashboardPage(
     ),
   
   dashboardBody(
-    fluidRow(
+    tabItems(
+      tabItem(tabName = "Main",
+               fluidRow(
       box(width = 4, title = "Scatter Plot", collapsible = TRUE, status = "warning", solidHeader = TRUE, plotOutput("plot1")),
       
       box(width = 8, title = "Data", collapsible = TRUE, status = "warning", solidHeader = TRUE, dataTableOutput("table1"))
+      )
+    ),
+    
+    tabItem(tabName = "Explore",
+            
+            fluidRow(
+              box(width = 6, title = "Summary",
+                  collapsible = TRUE, solidHeader = TRUE, status = "primary",
+                  tableOutput("SummaryTable")),
+              
+              box(width = 6, title = "Summary",
+                  collapsible = TRUE, solidHeader = TRUE, status = "primary",
+                  plotOutput("corrplot", height = "550px"))
+            )
+            
+            
+            )
+   
     )
   )
 )
