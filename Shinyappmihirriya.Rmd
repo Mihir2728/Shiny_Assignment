@@ -88,7 +88,12 @@ ui <- dashboardPage(
     radioButtons(inputId = "Sex", label = "Participant's Gender", choices = c("Male", "Female")),
     sliderInput(inputId = "Bmi", "Body Mass Index range:", min = 13, max = 50, value = c(15, 45))
   ),
-  dashboardBody()
+  dashboardBody(
+    fluidRow(
+      box(width = 4, title = "Scatter Plot", collapsible = TRUE, status = "warning", solidHeader = TRUE, plotOutput("plot1")),
+      box(width = 8, title = "Data", collapsible = TRUE, status = "warning", solidHeader = TRUE, dataTableOutput("table1"))
+    )
+  )
 )
     
 
