@@ -102,9 +102,12 @@ head(df)
 ```{r}
 library(shinydashboard)
 
+# Adding ui to the shiny app
 ui <- dashboardPage(
-  dashboardHeader(title = "Digitalis Randomized, Double-blind, Multicenter Trial", titleWidth = 550),
+  dashboardHeader(title = "Digitalis Randomized, Double-blind, Multicenter Trial", titleWidth = 550), # trial tital is given to the shiny dashboard header
   
+  
+#Two side bar is created main and explore
   dashboardSidebar(
     sidebarMenu(
       menuItem("Main", tabName = "Main", icon = icon("dashboard")),
