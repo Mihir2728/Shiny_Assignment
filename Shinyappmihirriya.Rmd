@@ -107,7 +107,7 @@ library(shinydashboard)
 
 # Adding ui to the shiny app
 ui <- dashboardPage(
-  dashboardHeader(title = "Digitalis Randomized, Double-blind, Multicenter Trial", titleWidth = 550), # trial tital is given to the shiny dashboard header
+  dashboardHeader(title = "Digitalis Randomized, Double-blind, Multicenter Trial", titleWidth = 550), # trial title is given to the shiny dashboard header
   
   
 #Two side bar is created main and explore
@@ -137,13 +137,9 @@ ui <- dashboardPage(
 # Dashboard --> Explore page, added 1 heat map and summary text
     tabItem(tabName = "Explore",
             fluidRow(
-              box(width = 6, title = "Summary",
-                  collapsible = TRUE, solidHeader = TRUE, status = "primary",
-                  tableOutput("SummaryTable")),
+              box(width = 6, title = "Summary", collapsible = TRUE, solidHeader = TRUE, status = "primary", tableOutput("SummaryTable")),
               
-              box(width = 6, title = "Interative Heatmap",
-                  collapsible = TRUE, solidHeader = TRUE, status = "primary",
-                  plotOutput("corrplot", height = "550px"))
+              box(width = 6, title = "Interative Heatmap", collapsible = TRUE, solidHeader = TRUE, status = "primary", plotOutput("corrplot", height = "550px"))
               )
             )
     ) # closing tabitems parentheses
@@ -164,24 +160,26 @@ server <- function(input, output) {
 
 # Scatterplot  
   output$plot1 <- renderPlot({
-    d <- df_sub()
+    st <- df_sub()
     
-    ggplot(data = d, aes(x = bmi, y = age)) +
+    ggplot(data = st, aes(x = bmi, y = age)) +
       geom_point(color = "lightblue") +
       labs(title = "BMI vs AGE",
            x = "BMI",
            y = "Age") +
       theme_minimal()
   })
-  
+
+# Data Table  
   output$table1 <- renderDataTable({
     df_sub()
   })
-  
+
+#Summary Table  
   output$SummaryTable <- renderTable({
     st <- df_sub()
     
-    num_df <- d[, sapply(d, is.numeric)]
+    num_df <- st[, sapply(d, is.numeric)]
     req(ncol(num_df) > 0)
       
     data.frame(
@@ -191,14 +189,14 @@ server <- function(input, output) {
       SD = sapply(num_df, sd, na.rm = TRUE),
       Min = sapply(num_df, min, na.rm = TRUE),
       Max = sapply(num_df, max, na.rm = TRUE))
-    )
+    
   })
 
 # heatmap (explore)  
   output$corrplot <- renderPlotly({
-    d <- df_sub()
+    st <- df_sub()
     
-    num_df <- d[, sapply(d, is.numeric)] #only numeric columns
+    num_df <- st[, sapply(st, is.numeric)] #only numeric columns
     
     req(ncol(num_df) > 1) #need at least 2 numeric vars
     
