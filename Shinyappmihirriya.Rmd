@@ -111,10 +111,9 @@ ui <- dashboardPage(
   dashboardSidebar(
     sidebarMenu(
       menuItem("Main", tabName = "Main", icon = icon("dashboard")),
-      menuItem("Explore", tabName = "Explore", icon = icon("chart-bar"))
-    ),
+      menuItem("Explore", tabName = "Explore", icon = icon("chart-bar"))),
     
-    selectInput(inputId = "Treatment", label = "Select Participants Treatment", choices = c("Placebo", "Digoxin"), multiple = FALSE),
+    selectInput(inputId = "Treatment", label = "Select Participants Treatment", choices = c("Placebo", "Digoxin"), multiple = TRUE),
     
     radioButtons(inputId = "Sex", label = "Participant's Gender", choices = c("Male", "Female")),
     
