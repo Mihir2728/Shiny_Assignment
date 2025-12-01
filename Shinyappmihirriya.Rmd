@@ -64,6 +64,8 @@ if (!require("shinydashboard")) install.packages("shinydashboard")
 if (!require("shiny")) install.packages("shiny")
 if (!require("reshape2")) install.packages("reshape2")
 if (!require("DT")) install.packages("DT")
+if (!require("plotly")) install.packages("plotly")
+
 
 library(tidyverse)
 library(janitor)
@@ -72,6 +74,7 @@ library(shiny)
 library(shinydashboard)
 library(reshape2)
 library(DT)
+library(plotly)
 ```
 
 ```{r}
@@ -148,14 +151,18 @@ ui <- dashboardPage(
 ) #closing dashboardPage parentheses
     
 
+# Building server for shiny app
 server <- function(input, output) {
+
+  # filtering reactive data
   df_sub <- reactive({
     df %>%
       filter(Treatment == input$Treatment) %>%
       filter(Sex == input$Sex) %>%
       filter(bmi >= input$Bmi[1] & bmi <= input$Bmi[2])
     })
-  
+
+# Scatterplot  
   output$plot1 <- renderPlot({
     d <- df_sub()
     
@@ -170,8 +177,25 @@ server <- function(input, output) {
   output$table1 <- renderDataTable({
     df_sub()
   })
+  
+  output$SummaryTable <- renderTable({
+    st <- df_sub()
+    
+    num_df <- d[, sapply(d, is.numeric)]
+    req(ncol(num_df > 0),
+      
+    data.frame(
+      Variable = names(num_df),
+      Mean = sapply(num_df, mean, na.rm = TRUE),
+      Median = sapply(num_df, median, na.rm = TRUE),
+      SD = sapply(num_df, sd, na.rm = TRUE),
+      Min = sapply(num_df, min, na.rm = TRUE),
+      Max = sapply(num_df, max, na.rm = TRUE))
+    )
+  })
+
 # heatmap (explore)  
-  output$corrplot <- renderPlot({
+  output$corrplot <- renderPlotly({
     d <- df_sub()
     
     num_df <- d[, sapply(d, is.numeric)] #only numeric columns
@@ -179,15 +203,21 @@ server <- function(input, output) {
     req(ncol(num_df) > 1) #need at least 2 numeric vars
     
     corr <- cor(num_df, use = "pairwise.complete.obs")
-    corr_melt <- melt(corr)
     
-    ggplot(corr_melt, aes(Var1, Var2, fill = value)) +
-      geom_tile() +
-      scale_fill_gradient2(
-        low = "blue", high = "red", mid = "white",
-        midpoint = 0, limit = c(-1,1), name = "Correlation"
-      ) +
-      theme_minimal()
+    plot_ly(
+      x = colnames(corr),
+      y = rownames(corr),
+      z = corr,
+      type = "heatmap",
+      colorscale = list(
+        c(0,1),
+        c("blue", "red")),
+      zmin = -1,
+      zmax = 1) %>%
+      layout(
+        xaxis = list(tickangle = 45),
+        yaxis = list(autorange = "reversed")
+      )
   })
 }
 
