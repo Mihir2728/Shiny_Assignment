@@ -83,7 +83,9 @@ df <- read.csv("DIG.csv") %>%
 df
 
 df <- df %>%
-  select(id, trtmt, age, race, sex, ejf_per, chestx, bmi, klevel, creat, digdoser, elevjvp, )
+  select(id, trtmt, age, race, sex, ejf_per, chestx, bmi, klevel, creat, digdoser, elevjvp, pedema, restdys, exertdys, actlimit, pulcong, heartrte, diabp, sysbp, prevmi, angina, diabetes, hyperten, diuretk, diuret, ksupp, aceinhib, nitrates, hydral, vasod, cvd, whf, mi, uang, strk, sva, vena, crev, ocvd, rinf, oth, hosp, nhosp, death, deathday)
+df
+
 
 ```
 
