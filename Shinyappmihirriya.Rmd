@@ -139,7 +139,7 @@ ui <- dashboardPage(
             fluidRow(
               box(width = 6, title = "Summary", collapsible = TRUE, solidHeader = TRUE, status = "primary", tableOutput("SummaryTable")),
               
-              box(width = 6, title = "Interative Heatmap", collapsible = TRUE, solidHeader = TRUE, status = "primary", plotOutput("corrplot", height = "550px"))
+              box(width = 6, title = "Interative Heatmap", collapsible = TRUE, solidHeader = TRUE, status = "primary", plotlyOutput("corrplot", height = "550px"))
               )
             )
     ) # closing tabitems parentheses
@@ -153,7 +153,7 @@ server <- function(input, output) {
   # filtering reactive data
   df_sub <- reactive({
     df %>%
-      filter(Treatment == input$Treatment) %>%
+      filter(Treatment %in% input$Treatment) %>%
       filter(Sex == input$Sex) %>%
       filter(bmi >= input$Bmi[1] & bmi <= input$Bmi[2])
     })
@@ -179,7 +179,7 @@ server <- function(input, output) {
   output$SummaryTable <- renderTable({
     st <- df_sub()
     
-    num_df <- st[, sapply(d, is.numeric)]
+    num_df <- st[, sapply(st, is.numeric)]
     req(ncol(num_df) > 0)
       
     data.frame(
