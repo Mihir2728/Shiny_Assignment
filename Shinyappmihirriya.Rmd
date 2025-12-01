@@ -119,17 +119,19 @@ ui <- dashboardPage(
     
     sliderInput(inputId = "Bmi", "Body Mass Index range:", min = 13, max = 70, value = c(15, 65))
     ),
-  
+
+# Dashboard --> Main page, added 1 scattered plot and a summary table  
   dashboardBody(
     tabItems(
       tabItem(tabName = "Main",
                fluidRow(
-      box(width = 4, title = "Scatter Plot", collapsible = TRUE, status = "warning", solidHeader = TRUE, plotOutput("plot1")),
-      
-      box(width = 8, title = "Data", collapsible = TRUE, status = "warning", solidHeader = TRUE, dataTableOutput("table1"))
+                 box(width = 4, title = "Scatter Plot", collapsible = TRUE, status = "warning", solidHeader = TRUE, plotOutput("plot1")),
+                 
+                 box(width = 8, title = "Data", collapsible = TRUE, status = "warning", solidHeader = TRUE, dataTableOutput("table1"))
       )
     ),
-    
+
+# Dashboard --> Explore page, added 1 heat map and summary text
     tabItem(tabName = "Explore",
             
             fluidRow(
