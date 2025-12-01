@@ -82,6 +82,17 @@ df <- read.csv("DIG.csv") %>%
   janitor::clean_names()
 df
 
+df <- df %>%
+  select(id, trtmt, age, race, sex, ejf_per, chestx, bmi, klevel, creat, digdoser, elevjvp, )
+
+```
+
+
+```{r}
+df <- read.csv("DIG.csv") %>%
+  janitor::clean_names()
+df
+
 
 df <- df %>%
  select(id, trtmt, age, sex, bmi, klevel, creat, diabp, sysbp, hyperten, cvd, whf, dig, hosp, hospdays, death, deathday) %>%
