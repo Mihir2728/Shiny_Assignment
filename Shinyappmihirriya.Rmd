@@ -62,12 +62,16 @@ if (!require("tidyverse")) install.packages("tidyverse")
 if (!require("lubridate")) install.packages("lubridate")
 if (!require("shinydashboard")) install.packages("shinydashboard")
 if (!require("shiny")) install.packages("shiny")
+if (!require("reshape2")) install.packages("reshape2")
+if (!require("DT")) install.packages("DT")
 
 library(tidyverse)
 library(janitor)
 library(lubridate)
 library(shiny)
 library(shinydashboard)
+library(reshape2)
+library(DT)
 ```
 
 ```{r}
@@ -103,8 +107,8 @@ ui <- dashboardPage(
   
   dashboardSidebar(
     sidebarMenu(
-      menuItem("Main", tabName = "main", icon = icon("dashboard")),
-      menuItem("Explore", tabName = "explore", icon = icon("chart-bar"))
+      menuItem("Main", tabName = "Main", icon = icon("dashboard")),
+      menuItem("Explore", tabName = "Explore", icon = icon("chart-bar"))
     ),
     
     selectInput(inputId = "Treatment", label = "Select Participants Treatment", choices = c("Placebo", "Digoxin"), multiple = FALSE),
@@ -167,7 +171,7 @@ server <- function(input, output) {
     df_sub()
   })
 # heatmap (explore)  
-  output$corrPlot <- renderPlot({
+  output$corrplot <- renderPlot({
     d <- df_sub()
     
     num_df <- d[, sapply(d, is.numeric)] #only numeric columns
