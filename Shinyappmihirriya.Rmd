@@ -182,7 +182,7 @@ server <- function(input, output) {
     st <- df_sub()
     
     num_df <- d[, sapply(d, is.numeric)]
-    req(ncol(num_df > 0),
+    req(ncol(num_df) > 0)
       
     data.frame(
       Variable = names(num_df),
