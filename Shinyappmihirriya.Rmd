@@ -133,23 +133,19 @@ ui <- dashboardPage(
 
 # Dashboard --> Explore page, added 1 heat map and summary text
     tabItem(tabName = "Explore",
-            
             fluidRow(
               box(width = 6, title = "Summary",
                   collapsible = TRUE, solidHeader = TRUE, status = "primary",
                   tableOutput("SummaryTable")),
               
-              box(width = 6, title = "Summary",
+              box(width = 6, title = "Interative Heatmap",
                   collapsible = TRUE, solidHeader = TRUE, status = "primary",
                   plotOutput("corrplot", height = "550px"))
+              )
             )
-            
-            
-            )
-   
-    )
-  )
-)
+    ) # closing tabitems parentheses
+  ) #closing dashboardbody parentheses
+) #closing dashboardPage parentheses
     
 
 server <- function(input, output) {
