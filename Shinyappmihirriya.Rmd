@@ -172,7 +172,10 @@ df <- df %>%
     Respiratory_infection = factor(rinf, levels = c(0, 1), labels = c("No", "Yes")),
     Other_noncardiac = factor(oth, levels = c(0, 1), labels = c("No", "Yes")),
     Hospitalization = factor(hosp, levels = c(0, 1), labels = c("No", "Yes")),
-    Death = factor(death, levels = c(0, 1), labels = c("Alive", "Dead")))
+    Death = factor(death, levels = c(0, 1), labels = c("Alive", "Dead"))) %>%
+  rename(
+    ID = id,
+    Age = age)
 
 ```
 
@@ -248,7 +251,10 @@ server <- function(input, output) {
 
 # Data Table  
   output$table1 <- renderDataTable({
-    df_sub()
+    df_sub() %>%
+      select(
+        ID, Treatment, Race, Sex, Age
+      )
   })
 
 #Summary Table  
