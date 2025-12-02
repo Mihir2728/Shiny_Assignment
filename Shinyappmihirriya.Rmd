@@ -212,7 +212,7 @@ ui <- dashboardPage(
     
     radioButtons(inputId = "Sex", label = "Participant's Gender", choices = c("Male", "Female")),
     
-    sliderInput(inputId = "Bmi", "Body Mass Index range:", min = 13, max = 70, value = c(15, 65))
+    sliderInput(inputId = "Age", "Participant's Age:", min = 18, max = 95, value = c(21, 90))
     ),
 
 # Dashboard --> Main page, added 2 summary table  
@@ -250,7 +250,7 @@ server <- function(input, output) {
     df %>%
       filter(Treatment %in% input$Treatment) %>%
       filter(Sex == input$Sex) %>%
-      filter(BMI >= input$Bmi[1] & BMI <= input$Bmi[2])
+      filter(Age>= input$Age[1] & Age <= input$Age[2])
     })
 
 
