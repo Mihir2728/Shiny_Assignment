@@ -214,7 +214,7 @@ ui <- dashboardPage(
     
     sliderInput(inputId = "Age", "Participant's Age:", min = 18, max = 95, value = c(21, 90)),
     
-    checkboxGroupInput("checkGroup", label = h3("Cardiovascular Events"), choices = list("ElevatedJVP" = 1, "Pedema" = 2, "Dyspnea_at_rest" = 3, "Dyspnea_on_exertion"= 4, "Pulmonary_congestion" = 5, "Prior_MI" = 6, "Angina" = 7, "Diabetes" = 8, "HTN" = 9, "Stroke" = 10, "Ventricular_Arrythmia" = 11)), 
+    checkboxGroupInput("checkGroup", label = h3("Cardiovascular Symptoms"), choices = list("ElevatedJVP" = 1, "Pedema" = 2, "Dyspnea_at_rest" = 3, "Dyspnea_on_exertion"= 4, "Action_limitation" = 5, "Pulmonary_congestion" = 6)), 
     hr(), fluidRow(column(3, verbatimTextOutput("value")))
     ),
 #----------------------------------------------------------------------------------------------------------------------
