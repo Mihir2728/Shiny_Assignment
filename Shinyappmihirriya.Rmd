@@ -241,7 +241,9 @@ ui <- dashboardPage(
               
               
               
-              box(width = 4, title = "Box Plot", collapsible = TRUE, status = "warning", solidHeader = TRUE, plotlyOutput("plot1"))
+              box(width = 4, title = "Box Plot", collapsible = TRUE, status = "warning", solidHeader = TRUE, plotlyOutput("plot1")),
+              
+              box(width = 4, title = "Cardiovascular Symptoms", collapsible = TRUE, status = "primary", solidHeader = TRUE, plotlyOutput("spiderPlot"))
               )
             )
     ) # closing tabitems parentheses
