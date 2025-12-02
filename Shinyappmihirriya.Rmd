@@ -177,30 +177,6 @@ df <- df %>%
 ```
 
 
-```{r}
-df <- read.csv("DIG.csv") %>%
-  janitor::clean_names()
-df
-
-
-df <- df %>%
- select(id, trtmt, age, sex, bmi, klevel, creat, diabp, sysbp, hyperten, cvd, whf, dig, hosp, hospdays, death, deathday) %>%
-  mutate(id = as.character(id), trtmt = as.factor(trtmt), age = as.numeric(age), sex = as.factor(sex), bmi = as.numeric(bmi), klevel = as.numeric(klevel), creat = as.numeric(creat), diabp = as.numeric(diabp), sysbp = as.numeric(sysbp), hyperten = as.factor(hyperten), cvd = as.factor(cvd), whf = as.factor(whf), dig = as.factor(dig), hosp = as.factor(hosp), hospdays = as.numeric(hospdays), death = as.factor(death), deathday = as.numeric(deathday)) %>%
-  mutate(
-    Treatment = factor(trtmt, levels = c(0, 1), labels = c("Placebo", "Digoxin")),
-    Sex = factor(sex, levels = c(1, 2), labels = c("Male", "Female")),
-    HTN = factor(hyperten, levels = c(0, 1), labels = c("No", "Yes")),
-    CVD = factor(cvd, levels = c(0, 1), labels = c("No", "Yes")),
-    WHF = factor(whf, levels = c(0, 1), labels = c("No", "Yes")),
-    dig = factor(dig, levels = c(0, 1), labels = c("No", "Yes")),
-    Hospitalization = factor(hosp, levels = c(0, 1), labels = c("No", "Yes")),
-    Death = factor(death, levels = c(0, 1), labels = c("Alive", "Dead")))
-
-
-
-head(df)
-```
-
 
 ```{r}
 library(shinydashboard)
