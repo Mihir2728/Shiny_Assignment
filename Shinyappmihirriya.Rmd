@@ -246,18 +246,18 @@ ui <- dashboardPage(
 # Dashboard --> Explore page, added multiple plots and a table
     tabItem(tabName = "Explore",
             fluidRow(
-              box(width = 5, title = "Summary", collapsible = TRUE, solidHeader = TRUE, status = "primary", tableOutput("SummaryTable")),
+              box(width = 6, title = "Summary", collapsible = TRUE, solidHeader = TRUE, status = "primary", tableOutput("SummaryTable")),
               
               
               
-              box(width = 6, title = "Interative Heatmap", collapsible = TRUE, solidHeader = TRUE, status = "primary", plotlyOutput("corrplot", height = "550px")),
+              box(width = 8, title = "Interative Heatmap", collapsible = TRUE, solidHeader = TRUE, status = "primary", plotlyOutput("corrplot", height = "550px")),
               
               
               
-              box(width = 4, title = "Box Plot", collapsible = TRUE, status = "warning", solidHeader = TRUE, plotlyOutput("plot1")),
+              box(width = 5, title = "Box Plot", collapsible = TRUE, status = "warning", solidHeader = TRUE, plotlyOutput("plot1")),
               
               
-              box(width = 4, title = "Cardiovascular Symptoms", collapsible = TRUE, status = "primary", solidHeader = TRUE, plotlyOutput("spiderPlot"))
+              box(width = 5, title = "Cardiovascular Symptoms", collapsible = TRUE, status = "primary", solidHeader = TRUE, plotlyOutput("spiderPlot"))
               )
             )
     ) # closing tabitems parentheses
