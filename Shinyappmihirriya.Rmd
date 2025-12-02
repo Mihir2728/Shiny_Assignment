@@ -212,7 +212,10 @@ ui <- dashboardPage(
     
     radioButtons(inputId = "Sex", label = "Participant's Gender", choices = c("Male", "Female")),
     
-    sliderInput(inputId = "Age", "Participant's Age:", min = 18, max = 95, value = c(21, 90))
+    sliderInput(inputId = "Age", "Participant's Age:", min = 18, max = 95, value = c(21, 90)),
+    
+    checkboxGroupInput("checkGroup", label = h3("Cardiovascular Events"), choices = list("ElevatedJVP" = 1, "Pedema" = 2, "Dyspnea_at_rest" = 3, "Dyspnea_on_exertion"= 4, "Pulmonary_congestion" = 5, "Prior_MI" = 6, "Angina" = 7, "Diabetes" = 8, "HTN" = 9, "Stroke" = 10, "Ventricular_Arrythmia" = 11)), 
+    hr(), fluidRow(column(3, verbatimTextOutput("value")))
     ),
 #----------------------------------------------------------------------------------------------------------------------
 # Dashboard --> Main page, added 2 summary table  
@@ -257,6 +260,7 @@ server <- function(input, output) {
       filter(Age>= input$Age[1] & Age <= input$Age[2])
     })
 
+  output$value <- renderPrint({input$checkGroup})
 
 # Data Table  1
   output$table1 <- renderDataTable({
