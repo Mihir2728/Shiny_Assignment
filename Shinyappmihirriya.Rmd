@@ -65,7 +65,7 @@ if (!require("shiny")) install.packages("shiny")
 if (!require("reshape2")) install.packages("reshape2")
 if (!require("DT")) install.packages("DT")
 if (!require("plotly")) install.packages("plotly")
-
+if (!require("UpSetR")) install.packages("UpSetR")
 
 library(tidyverse)
 library(janitor)
@@ -75,6 +75,7 @@ library(shinydashboard)
 library(reshape2)
 library(DT)
 library(plotly)
+library(UpSetR)
 ```
 
 ```{r}
@@ -257,7 +258,12 @@ ui <- dashboardPage(
               box(width = 5, title = "Box Plot", collapsible = TRUE, status = "warning", solidHeader = TRUE, plotlyOutput("plot1")),
               
               
-              box(width = 5, title = "Cardiovascular Symptoms", collapsible = TRUE, status = "primary", solidHeader = TRUE, plotlyOutput("spiderPlot"))
+              
+              box(width = 5, title = "Cardiovascular Symptoms", collapsible = TRUE, status = "primary", solidHeader = TRUE, plotlyOutput("spiderPlot")),
+              
+              
+              box(width = 5, title = "CVD & Drug association", collapsible = TRUE, status = "primary", solidHeader = TRUE, plotOutput("spiderPlot"))
+              
               )
             )
     ) # closing tabitems parentheses
