@@ -144,11 +144,11 @@ df <- df %>%
     Race = factor(race, levels = c(1, 2), labels = c("White", "Non-white")),
     Sex = factor(sex, levels = c(1, 2), labels = c("Male", "Female")),
     ElevatedJVP = factor(elevjvp, levels = c(0, 1, 2, 3), labels = c("Normal", "Mild", "Moderate", "Severe")),
-    Pedema = factor(pedema, levels = c(0, 1, 2, 3), labels = c("No", "Mild", "Moderate", "Severe")),
-    Dyspnea_at_rest = factor(restdys, levels = c(0, 1, 2, 3), labels = c("No", "Mild", "Moderate", "Severe")),
-    Dyspnea_on_exertion = factor(exertdys, levels = c(0, 1, 2, 3), labels = c("No", "Mild", "Moderate", "Severe")),
-    Action_limitation = factor(actlimit, levels = c(0, 1, 2, 3), labels = c("No", "Mild", "Moderate", "Severe")),
-    Pulmonary_congestion = factor(pulcong, levels = c(0, 1, 2, 3), labels = c("No", "Mild", "Moderate", "Severe")),
+    Pedema = factor(pedema, levels = c(0, 1, 2, 3), labels = c("Normal", "Mild", "Moderate", "Severe")),
+    Dyspnea_at_rest = factor(restdys, levels = c(0, 1, 2, 3), labels = c("Normal", "Mild", "Moderate", "Severe")),
+    Dyspnea_on_exertion = factor(exertdys, levels = c(0, 1, 2, 3), labels = c("Normal", "Mild", "Moderate", "Severe")),
+    Action_limitation = factor(actlimit, levels = c(0, 1, 2, 3), labels = c("Normal", "Mild", "Moderate", "Severe")),
+    Pulmonary_congestion = factor(pulcong, levels = c(0, 1, 2, 3), labels = c("Normal", "Mild", "Moderate", "Severe")),
     Prior_MI = factor(prevmi, levels = c(0, 1), labels = c("No", "Yes")),
     Angina = factor(angina, levels = c(0, 1), labels = c("No", "Yes")),
     Diabetes = factor(diabetes, levels = c(0, 1), labels = c("No", "Yes")),
@@ -190,12 +190,25 @@ df <- df %>%
     Death_or_Hosp_WHF = deathday,
     )
 
-```
 
+# starting with the shiny app development
 
-
-```{r}
 library(shinydashboard)
+
+
+
+df <- df %>%
+  mutate(
+    ElevatedJVP = factor(elevjvp, levels = c(0, 1, 2, 3), labels = c("Normal", "Mild", "Moderate", "Severe")),
+    Pedema = factor(pedema, levels = c(0, 1, 2, 3), labels = c("Normal", "Mild", "Moderate", "Severe")),
+    Dyspnea_at_rest = factor(restdys, levels = c(0, 1, 2, 3), labels = c("Normal", "Mild", "Moderate", "Severe")),
+    Dyspnea_on_exertion = factor(exertdys, levels = c(0, 1, 2, 3), labels = c("Normal", "Mild", "Moderate", "Severe")),
+    Action_limitation = factor(actlimit, levels = c(0, 1, 2, 3), labels = c("Normal", "Mild", "Moderate", "Severe")),
+    Pulmonary_congestion = factor(pulcong, levels = c(0, 1, 2, 3), labels = c("Normal", "Mild", "Moderate", "Severe"))
+  )
+
+
+
 
 # Adding ui to the shiny app
 ui <- dashboardPage(
@@ -242,6 +255,7 @@ ui <- dashboardPage(
               
               
               box(width = 4, title = "Box Plot", collapsible = TRUE, status = "warning", solidHeader = TRUE, plotlyOutput("plot1")),
+              
               
               box(width = 4, title = "Cardiovascular Symptoms", collapsible = TRUE, status = "primary", solidHeader = TRUE, plotlyOutput("spiderPlot"))
               )
@@ -316,7 +330,49 @@ server <- function(input, output) {
     
   })
   
+#--------------------------------------------------------------------------------------------
   
+output$spiderPlot <- renderPlotly({
+  req(input$checkGroup)
+
+  vars_map <- c(
+    "1" = "ElevatedJVP",
+    "2" = "Pedema",
+    "3" = "Dyspnea_at_rest",
+    "4" = "Dyspnea_on_exertion",
+    "5" = "Action_limitation",
+    "6" = "Pulmonary_congestion"
+  )
+
+  selected_vars <- vars_map[input$checkGroup]
+
+  st <- df_sub() %>% select(all_of(selected_vars))
+  req(nrow(st) > 0)
+
+  # Convert to long format
+  long_df <- tidyr::pivot_longer(st,
+                                 cols = everything(),
+                                 names_to = "Symptom",
+                                 values_to = "Severity")
+
+  # Plot
+  plot_ly(
+    data = long_df,
+    x = ~Symptom,
+    color = ~Severity,
+    type = "bar"
+  ) %>%
+    layout(
+      barmode = "stack",
+      title = "Severity Distribution of CV Symptoms",
+      xaxis = list(title = "Symptom"),
+      yaxis = list(title = "Count of Participants")
+    )
+})
+  
+  
+  
+    
 #--------------------------------------------------------------------------------------------------
 # heatmap (explore)  
   output$corrplot <- renderPlotly({
