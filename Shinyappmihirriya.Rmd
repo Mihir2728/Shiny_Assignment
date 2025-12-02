@@ -83,7 +83,7 @@ df <- read.csv("DIG.csv") %>%
 df
 
 df <- df %>%
-  select(id, trtmt, age, race, sex, ejf_per, chestx, bmi, klevel, creat, digdoser, elevjvp, pedema, restdys, exertdys, actlimit, pulcong, heartrte, diabp, sysbp, prevmi, angina, diabetes, hyperten, diuretk, diuret, ksupp, aceinhib, nitrates, hydral, vasod, cvd, whf, mi, uang, strk, sva, vena, crev, ocvd, rinf, oth, hosp, hospdays, nhosp, death, deathday) %>%
+  select(id, trtmt, age, race, sex, ejf_per, chestx, bmi, klevel, creat, digdoser, elevjvp, pedema, restdys, exertdys, actlimit, pulcong, heartrte, diabp, sysbp, prevmi, angina, diabetes, hyperten, diguse, diuretk, diuret, ksupp, aceinhib, nitrates, hydral, vasod, cvd, whf, mi, uang, strk, sva, vena, crev, ocvd, rinf, oth, hosp, hospdays, nhosp, death, deathday) %>%
   
   mutate(
     id = as.character(id),
@@ -110,6 +110,7 @@ df <- df %>%
     angina = as.factor(angina),
     diabetes = as.factor(diabetes),
     hyperten = as.factor(hyperten),
+    diguse = as.factor(diguse),
     diuretk = as.factor(diuretk),
     diuret = as.factor(diuret),
     ksupp = as.factor(ksupp),
@@ -135,6 +136,43 @@ df <- df %>%
     deathday = as.numeric(deathday))
 df
 
+
+df <- df %>%
+  mutate(
+    Treatment = factor(trtmt, levels = c(0, 1), labels = c("Placebo", "Digoxin")),
+    Race = factor(race, levels = c(1, 2), labels = c("White", "Non-white")),
+    Sex = factor(sex, levels = c(1, 2), labels = c("Male", "Female")),
+    ElevatedJVP = factor(elevjvp, levels = c(0, 1, 2, 3), labels = c("Normal", "Mild", "Moderate", "Severe")),
+    Pedema = factor(pedema, levels = c(0, 1, 2, 3), labels = c("No", "Mild", "Moderate", "Severe")),
+    Dyspnea_at_rest = factor(restdys, levels = c(0, 1, 2, 3), labels = c("No", "Mild", "Moderate", "Severe")),
+    Dyspnea_on_exertion = factor(exertdys, levels = c(0, 1, 2, 3), labels = c("No", "Mild", "Moderate", "Severe")),
+    Action_limitation = factor(actlimit, levels = c(0, 1, 2, 3), labels = c("No", "Mild", "Moderate", "Severe")),
+    Pulmonary_congestion = factor(pulcong, levels = c(0, 1, 2, 3), labels = c("No", "Mild", "Moderate", "Severe")),
+    Prior_MI = factor(prevmi, levels = c(0, 1), labels = c("No", "Yes")),
+    Angina = factor(angina, levels = c(0, 1), labels = c("No", "Yes")),
+    Diabetes = factor(diabetes, levels = c(0, 1), labels = c("No", "Yes")),
+    HTN = factor(hyperten, levels = c(0, 1), labels = c("No", "Yes")),
+    On_Digoxin = factor(diguse, levels = c(0, 1), labels = c("No", "Yes")),
+    On_Ksparing = factor(diuretk, levels = c(0, 1), labels = c("No", "Yes")),
+    On_Diuretic = factor(diuret, levels = c(0, 1), labels = c("No", "Yes")),
+    On_Ksupp = factor(ksupp, levels = c(0, 1), labels = c("No", "Yes")),
+    On_ACE = factor(aceinhib, levels = c(0, 1), labels = c("No", "Yes")),
+    On_Nitrates = factor(nitrates, levels = c(0, 1), labels = c("No", "Yes")),
+    On_Hydralazine = factor(hydral, levels = c(0, 1), labels = c("No", "Yes")),
+    On_Vasodilator = factor(vasod, levels = c(0, 1), labels = c("No", "Yes")),
+    CVD = factor(cvd, levels = c(0, 1), labels = c("No", "Yes")),
+    WHF = factor(whf, levels = c(0, 1), labels = c("No", "Yes")),
+    MI = factor(mi, levels = c(0, 1), labels = c("No", "Yes")),
+    Unstable_Angina = factor(uang, levels = c(0, 1), labels = c("No", "Yes")),
+    Stroke = factor(strk, levels = c(0, 1), labels = c("No", "Yes")),
+    Supraventricular_Arrhythmia = factor(sva, levels = c(0, 1), labels = c("No", "Yes")),
+    Ventricular_Arrythmia = factor(vena, levels = c(0, 1), labels = c("No", "Yes")),
+    Coronary_Revasc = factor(crev, levels = c(0, 1), labels = c("No", "Yes")),
+    Other_CVD = factor(whf, levels = c(0, 1), labels = c("No", "Yes")),
+    Respiratory_infection = factor(rinf, levels = c(0, 1), labels = c("No", "Yes")),
+    Other_non-cardiac = factor(oth, levels = c(0, 1), labels = c("No", "Yes")),
+    Hospitalization = factor(hosp, levels = c(0, 1), labels = c("No", "Yes")),
+    Death = factor(death, levels = c(0, 1), labels = c("Alive", "Dead")))
 
 ```
 
