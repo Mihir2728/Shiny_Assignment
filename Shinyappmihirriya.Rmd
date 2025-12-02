@@ -83,7 +83,7 @@ df <- read.csv("DIG.csv") %>%
 df
 
 df <- df %>%
-  select(id, trtmt, age, race, sex, ejf_per, chestx, bmi, klevel, creat, digdoser, elevjvp, pedema, restdys, exertdys, actlimit, pulcong, heartrte, diabp, sysbp, prevmi, angina, diabetes, hyperten, diguse, diuretk, diuret, ksupp, aceinhib, nitrates, hydral, vasod, cvd, whf, mi, uang, strk, sva, vena, crev, ocvd, rinf, oth, hosp, hospdays, nhosp, death, deathday) %>%
+  select(id, trtmt, age, race, sex, ejf_per, chestx, bmi, klevel, creat, digdoser, elevjvp, pedema, restdys, exertdys, actlimit, pulcong, heartrte, diabp, sysbp, prevmi, angina, diabetes, hyperten, diguse, diuretk, diuret, ksupp, aceinhib, nitrates, hydral, vasod, digdose, cvd, whf, mi, uang, strk, sva, vena, crev, ocvd, rinf, oth, hosp, hospdays, nhosp, death, deathday) %>%
   
   mutate(
     id = as.character(id),
@@ -118,6 +118,7 @@ df <- df %>%
     nitrates = as.factor(nitrates),
     hydral = as.factor(hydral),
     vasod = as.factor(vasod),
+    digdose = as.numeric(digdose),
     cvd = as.factor(cvd),
     whf = as.factor(whf),
     mi = as.factor(mi),
@@ -168,14 +169,16 @@ df <- df %>%
     Supraventricular_Arrhythmia = factor(sva, levels = c(0, 1), labels = c("No", "Yes")),
     Ventricular_Arrythmia = factor(vena, levels = c(0, 1), labels = c("No", "Yes")),
     Coronary_Revasc = factor(crev, levels = c(0, 1), labels = c("No", "Yes")),
-    Other_CVD = factor(whf, levels = c(0, 1), labels = c("No", "Yes")),
+    Other_CVD = factor(ocvd, levels = c(0, 1), labels = c("No", "Yes")),
     Respiratory_infection = factor(rinf, levels = c(0, 1), labels = c("No", "Yes")),
     Other_noncardiac = factor(oth, levels = c(0, 1), labels = c("No", "Yes")),
     Hospitalization = factor(hosp, levels = c(0, 1), labels = c("No", "Yes")),
     Death = factor(death, levels = c(0, 1), labels = c("Alive", "Dead"))) %>%
   rename(
     ID = id,
-    Age = age)
+    Age = age,
+    Prescribed_dose = digdose,
+    Recommended_Dig_dose = digdoser)
 
 ```
 
@@ -241,7 +244,7 @@ server <- function(input, output) {
   output$plot1 <- renderPlot({
     st <- df_sub()
     
-    ggplot(data = st, aes(x = bmi, y = age)) +
+    ggplot(data = st, aes(x = bmi, y = Age)) +
       geom_point(color = "lightblue") +
       labs(title = "BMI vs AGE",
            x = "BMI",
@@ -253,7 +256,7 @@ server <- function(input, output) {
   output$table1 <- renderDataTable({
     df_sub() %>%
       select(
-        ID, Treatment, Race, Sex, Age
+        ID, Sex, Age, Race, Treatment, HTN, Diabetes, CVD, On_Digoxin, Prescribed_dose, Recommended_Dig_dose
       )
   })
 
