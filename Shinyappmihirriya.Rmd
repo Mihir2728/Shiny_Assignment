@@ -190,13 +190,13 @@ df <- df %>%
     Death_or_Hosp_WHF = deathday,
     )
 
-
+# ------------------------------------------------------------------------------------------------------------------
 # starting with the shiny app development
 
 library(shinydashboard)
 
 
-
+# this is created for bar plot of symptoms (specific subset)
 df <- df %>%
   mutate(
     ElevatedJVP = factor(elevjvp, levels = c(0, 1, 2, 3), labels = c("Normal", "Mild", "Moderate", "Severe")),
