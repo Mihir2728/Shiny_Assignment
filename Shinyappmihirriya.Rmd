@@ -413,16 +413,37 @@ output$spiderPlot <- renderPlotly({
   
   output$UpSetPlot <- renderPlot({
     st <- df_sub() %>%
-      select(ID, CVD, On_Digoxin, On_Ksparing, On_Diuretic, On_Ksupp, On_ACE, On_Nitrates, On_Hydralazine, On_Vasodilator)
+      select(CVD, On_Digoxin, On_Ksparing, On_Diuretic, On_Ksupp, On_ACE, On_Nitrates, On_Hydralazine, On_Vasodilator)
     
-    st <- st %>%
-      mutate(across(everything(), ~ ifelse(. == "Yes", 1, 0)))
+    req(nrow(st) > 1)
     
-    row.names(st) <- paste0("P", seq_len(nrow(st)))
+    drug_cols <- c("On_Digoxin", "On_Ksparing", "On_Diuretic", "On_Ksupp", "On_ACE", "On_Nitrates", "On_Hydralazine", "On_Vasodilator")
     
-    upset(st,
-          sets = c("On_Digoxin", "On_Ksparing", "On_Diuretic", "On_Ksupp", "On_ACE", "On_Nitrates", "On_Hydralazine", "On_Vasodilator"),
-          order.by = "freq")
+    st_bin <- st %>%
+      mutate(across(all_of(drug_cols), ~ ifelse(. == "Yes", 1, 0))) %>%
+      mutate(CVD_color = ifelse(CVD == "Yes", "CVD", "Non-CVD"))
+    
+    row.names(st_bin) <- paste0("P", seq_len(nrow(st_bin)))
+    
+    upset(st_bin,
+          sets = drug_cols,
+          order.by = "freq",
+          attribute.plots = list(
+            gridrows = 60,
+            plots = list(
+              list(
+                plot = function(data, ...) {
+                  ggplot(data, aes(x = CVD_color, fill = CVD_color)) +
+                    geom_bar() +
+                    labs(
+                      title = "CVD Distribution", x = "", y = "Count") +
+                    scale_fill_manual(values = c("CVD" = "red", "Non-CVD" = "blue"))
+                },
+                x = "CVD_color",
+                queries = TRUE
+              )
+            )
+          ))
     
   })
   
