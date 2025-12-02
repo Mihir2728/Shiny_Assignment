@@ -262,7 +262,7 @@ ui <- dashboardPage(
               box(width = 5, title = "Cardiovascular Symptoms", collapsible = TRUE, status = "primary", solidHeader = TRUE, plotlyOutput("spiderPlot")),
               
               
-              box(width = 5, title = "CVD & Drug association", collapsible = TRUE, status = "primary", solidHeader = TRUE, plotOutput("spiderPlot"))
+              box(width = 12, title = "CVD & Drug association", collapsible = TRUE, status = "primary", solidHeader = TRUE, plotOutput("UpSetPlot"))
               
               )
             )
@@ -406,6 +406,26 @@ output$spiderPlot <- renderPlotly({
         yaxis = list(autorange = "reversed")
       )
   })
+  
+  
+#-----------------------------------------------------------------------------------------------
+#upset plot 
+  
+  output$UpSetPlot <- renderPlot({
+    st <- df_sub() %>%
+      select(ID, CVD, On_Digoxin, On_Ksparing, On_Diuretic, On_Ksupp, On_ACE, On_Nitrates, On_Hydralazine, On_Vasodilator)
+    
+    st <- st %>%
+      mutate(across(everything(), ~ ifelse(. == "Yes", 1, 0)))
+    
+    row.names(st) <- paste0("P", seq_len(nrow(st)))
+    
+    upset(st,
+          sets = c("On_Digoxin", "On_Ksparing", "On_Diuretic", "On_Ksupp", "On_ACE", "On_Nitrates", "On_Hydralazine", "On_Vasodilator"),
+          order.by = "freq")
+    
+  })
+  
 }
 
 shinyApp(ui = ui, server = server)
