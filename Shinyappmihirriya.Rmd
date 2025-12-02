@@ -179,7 +179,9 @@ df <- df %>%
     Age = age,
     Prescribed_dose = digdose,
     Recommended_Dig_dose = digdoser, 
-    BMI = bmi)
+    BMI = bmi,
+    EF_percent = ejf_per
+    )
 
 ```
 
@@ -211,9 +213,11 @@ ui <- dashboardPage(
     tabItems(
       tabItem(tabName = "Main",
                fluidRow(
-                 box(width = 4, title = "Scatter Plot", collapsible = TRUE, status = "warning", solidHeader = TRUE, plotOutput("plot1")),
+                # box(width = 4, title = "Scatter Plot", collapsible = TRUE, status = "warning", solidHeader = TRUE, plotOutput("plot1")),
                  
-                 box(width = 12, title = "Data", collapsible = TRUE, status = "warning", solidHeader = TRUE, dataTableOutput("table1"))
+                 box(width = 12, title = "Trial Data with Participant's Demographics", collapsible = TRUE, status = "warning", solidHeader = TRUE, dataTableOutput("table1")),
+                 
+                 box(width = 12, title = "Cardiovascular conditions of Participants", collapsible = TRUE, status = "warning", solidHeader = TRUE, dataTableOutput("table2"))
       )
     ),
 
@@ -242,18 +246,18 @@ server <- function(input, output) {
     })
 
 # Scatterplot  
-  output$plot1 <- renderPlot({
-    st <- df_sub()
+ # output$plot1 <- renderPlot({
+    #st <- df_sub()
     
-    ggplot(data = st, aes(x = BMI, y = Age)) +
-      geom_point(color = "lightblue") +
-      labs(title = "BMI vs AGE",
-           x = "BMI",
-           y = "Age") +
-      theme_minimal()
-  })
+   # ggplot(data = st, aes(x = BMI, y = Age)) +
+  #    geom_point(color = "lightblue") +
+  #    labs(title = "BMI vs AGE",
+      #     x = "BMI",
+      #     y = "Age") +
+    #  theme_minimal()
+  #})
 
-# Data Table  
+# Data Table  1
   output$table1 <- renderDataTable({
     df_sub() %>%
       select(
@@ -261,6 +265,15 @@ server <- function(input, output) {
       )
   })
 
+# Data Table  2
+  output$table2 <- renderDataTable({
+    df_sub() %>%
+      select(
+        ID, EF_percent, klevel, ElevatedJVP, Pedema, Dyspnea_at_rest, HTN, Diabetes, CVD, Prior_MI, Angina, Stroke, Death
+      )
+  })  
+  
+  
 #Summary Table  
   output$SummaryTable <- renderTable({
     st <- df_sub()
