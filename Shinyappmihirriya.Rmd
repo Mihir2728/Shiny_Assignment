@@ -187,7 +187,7 @@ df <- df %>%
     Systolic_BP = sysbp,
     Hospital_days = hospdays,
     No.of_Hosp = nhosp,
-    Death_or_Hosp_WHF = deathday
+    Death_or_Hosp_WHF = deathday,
     )
 
 ```
@@ -214,7 +214,7 @@ ui <- dashboardPage(
     
     sliderInput(inputId = "Age", "Participant's Age:", min = 18, max = 95, value = c(21, 90))
     ),
-----------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 # Dashboard --> Main page, added 2 summary table  
   dashboardBody(
     tabItems(
@@ -226,7 +226,7 @@ ui <- dashboardPage(
                  box(width = 12, title = "Cardiovascular conditions of Participants", collapsible = TRUE, status = "warning", solidHeader = TRUE, dataTableOutput("table2"))
       )
     ),
----------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------
 # Dashboard --> Explore page, added multiple plots and a table
     tabItem(tabName = "Explore",
             fluidRow(
@@ -245,7 +245,7 @@ ui <- dashboardPage(
   ) #closing dashboardbody parentheses
 ) #closing dashboardPage parentheses
     
-----------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------
 # Building server for shiny app
 server <- function(input, output) {
 
@@ -274,7 +274,7 @@ server <- function(input, output) {
       )
   })  
   
----------------------------------------------------------------------------------------------------------  
+#---------------------------------------------------------------------------------------------------------  
 #Summary Table  
   output$SummaryTable <- renderTable({
     st <- df_sub()
@@ -292,12 +292,14 @@ server <- function(input, output) {
       Max = sapply(num_df, max, na.rm = TRUE))
     
   })
- ------------------------------------------------------------------------------------------------------------ 
+ #------------------------------------------------------------------------------------------------------------ 
 # Scatterplot  
   output$plot1 <- renderPlot({
-    st <- df_sub()
+    st <- df_sub() %>%
+      filter(CVD %in% input$CVD) %>%
+      filter(Prescribed_dose == input$Prescribed_dose)
     
-    ggplot(data = st, aes(x = BMI, y = Age)) +
+    ggplot(data = st, aes(x = CVD, y = Prescribed_dose)) +
       geom_point(color = "lightblue") +
       labs(title = "BMI vs AGE",
            x = "BMI",
@@ -306,7 +308,7 @@ server <- function(input, output) {
   })
   
   
---------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 # heatmap (explore)  
   output$corrplot <- renderPlotly({
     st <- df_sub()
