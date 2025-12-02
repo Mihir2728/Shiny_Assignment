@@ -83,7 +83,56 @@ df <- read.csv("DIG.csv") %>%
 df
 
 df <- df %>%
-  select(id, trtmt, age, race, sex, ejf_per, chestx, bmi, klevel, creat, digdoser, elevjvp, pedema, restdys, exertdys, actlimit, pulcong, heartrte, diabp, sysbp, prevmi, angina, diabetes, hyperten, diuretk, diuret, ksupp, aceinhib, nitrates, hydral, vasod, cvd, whf, mi, uang, strk, sva, vena, crev, ocvd, rinf, oth, hosp, nhosp, death, deathday)
+  select(id, trtmt, age, race, sex, ejf_per, chestx, bmi, klevel, creat, digdoser, elevjvp, pedema, restdys, exertdys, actlimit, pulcong, heartrte, diabp, sysbp, prevmi, angina, diabetes, hyperten, diuretk, diuret, ksupp, aceinhib, nitrates, hydral, vasod, cvd, whf, mi, uang, strk, sva, vena, crev, ocvd, rinf, oth, hosp, hospdays, nhosp, death, deathday) %>%
+  
+  mutate(
+    id = as.character(id),
+    trtmt = as.factor(trtmt),
+    age = as.numeric(age),
+    race = as.factor(race),
+    sex = as.factor(sex),
+    ejf_per = as.numeric(ejf_per),
+    chestx = as.numeric(chestx),
+    bmi = as.numeric(bmi),
+    klevel = as.numeric(klevel),
+    creat = as.numeric(creat),
+    digdoser = as.numeric(digdoser),
+    elevjvp = as.factor(elevjvp),
+    pedema = as.factor(pedema),
+    restdys = as.factor(restdys),
+    exertdys = as.factor(exertdys),
+    actlimit = as.factor(actlimit),
+    pulcong = as.factor(pulcong),
+    heartrte = as.numeric(heartrte),
+    diabp = as.numeric(diabp),
+    sysbp = as.numeric(sysbp),
+    prevmi = as.factor(prevmi),
+    angina = as.factor(angina),
+    diabetes = as.factor(diabetes),
+    hyperten = as.factor(hyperten),
+    diuretk = as.factor(diuretk),
+    diuret = as.factor(diuret),
+    ksupp = as.factor(ksupp),
+    aceinhib = as.factor(aceinhib),
+    nitrates = as.factor(nitrates),
+    hydral = as.factor(hydral),
+    vasod = as.factor(vasod),
+    cvd = as.factor(cvd),
+    whf = as.factor(whf),
+    mi = as.factor(mi),
+    uang = as.factor(uang),
+    strk = as.factor(strk),
+    sva = as.factor(sva),
+    vena = as.factor(vena),
+    crev = as.factor(crev),
+    ocvd = as.factor(ocvd),
+    rinf = as.factor(rinf),
+    oth = as.factor(oth),
+    hosp = as.factor(hosp),
+    hospdays = as.numeric(hospdays),
+    nhosp = as.numeric(nhosp),
+    death = as.factor(death),
+    deathday = as.numeric(deathday))
 df
 
 
