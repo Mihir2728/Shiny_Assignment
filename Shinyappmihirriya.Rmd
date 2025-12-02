@@ -170,7 +170,7 @@ df <- df %>%
     Coronary_Revasc = factor(crev, levels = c(0, 1), labels = c("No", "Yes")),
     Other_CVD = factor(whf, levels = c(0, 1), labels = c("No", "Yes")),
     Respiratory_infection = factor(rinf, levels = c(0, 1), labels = c("No", "Yes")),
-    Other_non-cardiac = factor(oth, levels = c(0, 1), labels = c("No", "Yes")),
+    Other_noncardiac = factor(oth, levels = c(0, 1), labels = c("No", "Yes")),
     Hospitalization = factor(hosp, levels = c(0, 1), labels = c("No", "Yes")),
     Death = factor(death, levels = c(0, 1), labels = c("Alive", "Dead")))
 
