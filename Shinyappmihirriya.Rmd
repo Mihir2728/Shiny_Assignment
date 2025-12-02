@@ -180,7 +180,14 @@ df <- df %>%
     Prescribed_dose = digdose,
     Recommended_Dig_dose = digdoser, 
     BMI = bmi,
-    EF_percent = ejf_per
+    EF_percent = ejf_per,
+    ChestXR_ratio = chestx,
+    Heart_rate = heartrte,
+    Diastolic_BP = diabp,
+    Systolic_BP = sysbp,
+    Hospital_days = hospdays,
+    No.of_Hosp = nhosp,
+    Death_or_Hosp_WHF = deathday
     )
 
 ```
@@ -267,6 +274,7 @@ server <- function(input, output) {
 #Summary Table  
   output$SummaryTable <- renderTable({
     st <- df_sub()
+    req(nrow(st) > 0)
     
     num_df <- st[, sapply(st, is.numeric)]
     req(ncol(num_df) > 0)
@@ -298,6 +306,7 @@ server <- function(input, output) {
 # heatmap (explore)  
   output$corrplot <- renderPlotly({
     st <- df_sub()
+    req(nrow(st) > 1) # rows should be more than one
     
     num_df <- st[, sapply(st, is.numeric)] #only numeric columns
     
