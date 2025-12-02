@@ -65,7 +65,7 @@ if (!require("shiny")) install.packages("shiny")
 if (!require("reshape2")) install.packages("reshape2")
 if (!require("DT")) install.packages("DT")
 if (!require("plotly")) install.packages("plotly")
-if (!require("UpSetR")) install.packages("UpSetR")
+if (!require("visNetwork")) install.packages("visNetwork")
 
 library(tidyverse)
 library(janitor)
@@ -75,7 +75,7 @@ library(shinydashboard)
 library(reshape2)
 library(DT)
 library(plotly)
-library(UpSetR)
+library(visNetwork)
 ```
 
 ```{r}
@@ -262,7 +262,7 @@ ui <- dashboardPage(
               box(width = 5, title = "Cardiovascular Symptoms", collapsible = TRUE, status = "primary", solidHeader = TRUE, plotlyOutput("spiderPlot")),
               
               
-              box(width = 12, title = "CVD & Drug association", collapsible = TRUE, status = "primary", solidHeader = TRUE, plotOutput("UpSetPlot"))
+              box(width = 6, title = "CVD-Drug Network", collapsible = TRUE, status = "primary", solidHeader = TRUE, visNetworkOutput("CVDnetwork", height = "500px"))
               
               )
             )
@@ -411,43 +411,45 @@ output$spiderPlot <- renderPlotly({
 #-----------------------------------------------------------------------------------------------
 #upset plot 
   
-  output$UpSetPlot <- renderPlot({
+  output$CVDnetwork <- renderVisNetwork({
     st <- df_sub() %>%
       select(CVD, On_Digoxin, On_Ksparing, On_Diuretic, On_Ksupp, On_ACE, On_Nitrates, On_Hydralazine, On_Vasodilator)
     
-    req(nrow(st) > 1)
+    req(nrow(st) > 0)
     
     drug_cols <- c("On_Digoxin", "On_Ksparing", "On_Diuretic", "On_Ksupp", "On_ACE", "On_Nitrates", "On_Hydralazine", "On_Vasodilator")
     
-    st_bin <- st %>%
-      mutate(across(all_of(drug_cols), ~ ifelse(. == "Yes", 1, 0))) %>%
-      mutate(CVD_color = ifelse(CVD == "Yes", "CVD", "Non-CVD"))
     
-    row.names(st_bin) <- paste0("P", seq_len(nrow(st_bin)))
+    edges <- lapply(drug_cols, function(drug) {
+      st %>%
+        group_by(CVD) %>%
+        summarise(count = sum(.data[[drug]] == "Yes")) %>%
+        mutate(drug = drug)
+    }) %>% bind_rows()
     
-    upset(st_bin,
-          sets = drug_cols,
-          order.by = "freq",
-          attribute.plots = list(
-            gridrows = 60,
-            plots = list(
-              list(
-                plot = function(data, ...) {
-                  ggplot(data, aes(x = CVD_color, fill = CVD_color)) +
-                    geom_bar() +
-                    labs(
-                      title = "CVD Distribution", x = "", y = "Count") +
-                    scale_fill_manual(values = c("CVD" = "red", "Non-CVD" = "blue"))
-                },
-                x = "CVD_color",
-                queries = TRUE
-              )
-            )
-          ))
+    edges <- edges %>% filter(count > 0) 
     
-  })
-  
-}
+# network edges created    
+    edges_df <- edges %>% 
+      mutate(from = CVD, to = drug, value = count, title = paste0(count, "patients")) %>%
+      select(from, to, value, title)
 
+# node list created    
+    nodes_df <- data.frame(
+      id = c("Yes", "No", drug_cols),
+      label = c("CVD", "Non-CVD", drug_cols),
+      color = c("red", "green", rep("lightblue", length(drug_cols))),
+      shape = "ellipse"
+    )
+
+
+# Intreactive graph
+    visNetwork(nodes_df, edges_df) %>%
+      visEdges(smooth = TRUE) %>%
+      visLayout(randomSeed = 123) %>%
+      visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE)
+
+  })
+}
 shinyApp(ui = ui, server = server)
 ```
