@@ -210,7 +210,7 @@ df <- df %>%
 
 
 
-
+#-------------------------------------------------------------------------------------------------------------------
 # Adding ui to the shiny app
 ui <- dashboardPage(
   dashboardHeader(title = "Digitalis Randomized, Double-blind, Multicenter Trial", titleWidth = 550), # trial title is given to the shiny dashboard header
@@ -222,7 +222,7 @@ ui <- dashboardPage(
       menuItem("Main", tabName = "Main", icon = icon("dashboard")),
       menuItem("Explore", tabName = "Explore", icon = icon("chart-bar"))),
     
-    fileInput("file1", "Choose a File"), verbatimTextOutput("file1_contents"), # 
+    fileInput("file1", "Choose a File"), verbatimTextOutput("file1_contents"), # File upload function added to the side bar
     
     
     selectInput(inputId = "Treatment", label = "Select Participants Treatment", choices = c("Placebo", "Digoxin"), multiple = TRUE),
@@ -264,7 +264,7 @@ ui <- dashboardPage(
               
               
               
-              box(width = 5, title = "Cardiovascular Symptoms", collapsible = TRUE, status = "primary", solidHeader = TRUE, plotlyOutput("spiderPlot")),
+              box(width = 5, title = "Cardiovascular Symptoms", collapsible = TRUE, status = "primary", solidHeader = TRUE, plotlyOutput("barPlot")),
               
               
               box(width = 6, title = "CVD-Drug Network", collapsible = TRUE, status = "primary", solidHeader = TRUE, visNetworkOutput("CVDnetwork", height = "500px")),
@@ -374,11 +374,46 @@ server <- function(input, output) {
 }) 
       
   
-  
-  
-  
-  
-  
+#--------------------------------------------------------------------------------------------
+ # bar plot 
+output$barPlot <- renderPlotly({
+  req(input$checkGroup)
+
+  vars_map <- c(
+    "1" = "ElevatedJVP",
+    "2" = "Pedema",
+    "3" = "Dyspnea_at_rest",
+    "4" = "Dyspnea_on_exertion",
+    "5" = "Action_limitation",
+    "6" = "Pulmonary_congestion"
+  )
+
+  selected_vars <- vars_map[input$checkGroup]
+
+  st <- df_sub() %>% select(all_of(selected_vars))
+  req(nrow(st) > 0)
+
+  # Convert to long format
+  long_df <- tidyr::pivot_longer(st,
+                                 cols = everything(),
+                                 names_to = "Symptom",
+                                 values_to = "Severity")
+
+  # Plot
+  plot_ly(
+    data = long_df,
+    x = ~Symptom,
+    color = ~Severity,
+    type = "bar"
+  ) %>%
+    layout(
+      barmode = "stack",
+      title = "Severity Distribution of CV Symptoms",
+      xaxis = list(title = "Symptom"),
+      yaxis = list(title = "Count of Participants")
+    )
+})
+
   
  #------------------------------------------------------------------------------------------------------------ 
 # Boxplot  
