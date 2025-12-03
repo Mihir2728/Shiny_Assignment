@@ -81,7 +81,7 @@ library(visNetwork)
 ```{r}
 df <- read.csv("DIG.csv") %>%
   janitor::clean_names()
-df
+
 
 df <- df %>%
   select(id, trtmt, age, race, sex, ejf_per, chestx, bmi, klevel, creat, digdoser, elevjvp, pedema, restdys, exertdys, actlimit, pulcong, heartrte, diabp, sysbp, prevmi, angina, diabetes, hyperten, diguse, diuretk, diuret, ksupp, aceinhib, nitrates, hydral, vasod, digdose, cvd, whf, mi, uang, strk, sva, vena, crev, ocvd, rinf, oth, hosp, hospdays, nhosp, death, deathday) %>%
@@ -136,7 +136,6 @@ df <- df %>%
     nhosp = as.numeric(nhosp),
     death = as.factor(death),
     deathday = as.numeric(deathday))
-df
 
 
 df <- df %>%
@@ -270,7 +269,10 @@ ui <- dashboardPage(
               box(width = 6, title = "CVD-Drug Network", collapsible = TRUE, status = "primary", solidHeader = TRUE, visNetworkOutput("CVDnetwork", height = "500px")),
               
               
-              box(width = 5, title = "Violin Plot", collapsible = TRUE, status = "primary", solidHeader = TRUE, plotlyOutput("violinPlot"))
+              box(width = 5, title = "Violin Plot", collapsible = TRUE, status = "primary", solidHeader = TRUE, plotlyOutput("violinPlot")),
+              
+              
+              box(width = 5, title = "Death corelation", collapsible = TRUE, status = "primary", solidHeader = TRUE, plotlyOutput("stackedbarPlot"),  height = "500px")
               )
             )
     ) # closing tabitems parentheses
@@ -347,7 +349,7 @@ server <- function(input, output) {
   
   output$violinPlot <- renderPlotly({
     st <- df_sub() %>%
-      select(Sex, klevel, creat, EF_percent, ChestXR_ratio, Heart_rate, Diastolic_BP, Systolic_BP)
+      select(Sex, EF_percent, Heart_rate, Diastolic_BP, Systolic_BP)
     
     st_vio <- st %>%
       pivot_longer(
@@ -368,8 +370,8 @@ server <- function(input, output) {
     
     fig <- fig %>%
       layout(
-        yaxis = list(zeroline = FALSE),
-        violinmode = "group"
+        yaxis = list(zeroline = FALSE)
+     #   violinmode = "group"
       )
 }) 
       
@@ -462,6 +464,59 @@ output$barPlot <- renderPlotly({
         yaxis = list(autorange = "reversed")
       )
   })
+  
+#---------------------------------------------------------------------------------------------
+# stacked bar graph for diseases and death correlation
+  
+  output$stackedbarPlot <- renderPlotly({
+    st <- df_sub() %>%
+      select(CVD, WHF, MI, Unstable_Angina, Stroke, Supraventricular_Arrhythmia, Ventricular_Arrythmia, Coronary_Revasc, Other_CVD, Respiratory_infection, Other_noncardiac, HTN, Angina, Death)
+    
+    
+    st$Death <- factor(st$Death, levels = c("Alive", "Dead")) 
+ 
+       
+  death_df <- tidyr::pivot_longer(
+    st,
+    cols = -Death,
+    names_to = "Conditions",
+    values_to = "Status"
+  ) 
+  
+  death_df <- death_df %>% filter(Status == "Yes")
+  
+  req(nrow(death_df) > 0)
+  
+  summary_df <- death_df %>%
+    group_by(Conditions, Death) %>%
+    summarise(count = n(), .groups = "drop")
+  
+  req(nrow(summary_df) > 0)
+  
+# Plotly graph     
+  plot_ly(data = summary_df,
+          x = ~Conditions,
+          y = ~count,
+          type = "bar",
+          color = ~Death,
+          colors = c("Alive" = "green4", "Dead" = "red3"),
+          text = ~count,
+          textposition = "inside",
+          hovertemplate = "Conditions: %{x}<br>Count: %{y}<extra></extra>"
+          ) %>%
+    layout(
+         barmode = "stack",
+         title = "Death vs Survivors",
+         xaxis = list(title = "Cardiovascular conditions", tickangle = -45),
+         yaxis = list(title = "Number of participants"),
+         legend = list(title = list(text = "Outcome")))
+    
+  })
+  
+  
+  
+  
+  
   
   
 #-----------------------------------------------------------------------------------------------
