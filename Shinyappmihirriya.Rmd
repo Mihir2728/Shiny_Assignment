@@ -397,48 +397,7 @@ server <- function(input, output) {
              legend = list(title = list(text = "Prescribed Dose")))
     
   })
-  
-#--------------------------------------------------------------------------------------------
-  
-output$spiderPlot <- renderPlotly({
-  req(input$checkGroup)
 
-  vars_map <- c(
-    "1" = "ElevatedJVP",
-    "2" = "Pedema",
-    "3" = "Dyspnea_at_rest",
-    "4" = "Dyspnea_on_exertion",
-    "5" = "Action_limitation",
-    "6" = "Pulmonary_congestion"
-  )
-
-  selected_vars <- vars_map[input$checkGroup]
-
-  st <- df_sub() %>% select(all_of(selected_vars))
-  req(nrow(st) > 0)
-
-  # Convert to long format
-  long_df <- tidyr::pivot_longer(st,
-                                 cols = everything(),
-                                 names_to = "Symptom",
-                                 values_to = "Severity")
-
-  # Plot
-  plot_ly(
-    data = long_df,
-    x = ~Symptom,
-    color = ~Severity,
-    type = "bar"
-  ) %>%
-    layout(
-      barmode = "stack",
-      title = "Severity Distribution of CV Symptoms",
-      xaxis = list(title = "Symptom"),
-      yaxis = list(title = "Count of Participants")
-    )
-})
-  
-  
   
     
 #--------------------------------------------------------------------------------------------------
