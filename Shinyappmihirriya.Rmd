@@ -267,8 +267,10 @@ ui <- dashboardPage(
               box(width = 5, title = "Cardiovascular Symptoms", collapsible = TRUE, status = "primary", solidHeader = TRUE, plotlyOutput("spiderPlot")),
               
               
-              box(width = 6, title = "CVD-Drug Network", collapsible = TRUE, status = "primary", solidHeader = TRUE, visNetworkOutput("CVDnetwork", height = "500px"))
+              box(width = 6, title = "CVD-Drug Network", collapsible = TRUE, status = "primary", solidHeader = TRUE, visNetworkOutput("CVDnetwork", height = "500px")),
               
+              
+              box(width = 5, title = "Violin Plot", collapsible = TRUE, status = "primary", solidHeader = TRUE, plotlyOutput("violinPlot"))
               )
             )
     ) # closing tabitems parentheses
@@ -339,6 +341,45 @@ server <- function(input, output) {
       Max = sapply(num_df, max, na.rm = TRUE))
     
   })
+ 
+#--------------------------------------------------------------------------------------------------------- 
+# violin plot
+  
+  output$violinPlot <- renderPlotly({
+    st <- df_sub() %>%
+      select(Sex, klevel, creat, EF_percent, ChestXR_ratio, Heart_rate, Diastolic_BP, Systolic_BP)
+    
+    st_vio <- st %>%
+      pivot_longer(
+        cols = -Sex,
+        names_to = "Variable",
+        values_to = "Value")
+    
+    fig <- plot_ly(
+      data = st_vio,
+      x = ~Variable,
+      y = ~Value,
+      color = ~Sex,
+      type = "violin",
+      split = ~Sex,
+      box = list(visible = TRUE),
+      meanline = list(visible = TRUE)
+      )
+    
+    fig <- fig %>%
+      layout(
+        yaxis = list(zeroline = FALSE),
+        violinmode = "group"
+      )
+}) 
+      
+  
+  
+  
+  
+  
+  
+  
  #------------------------------------------------------------------------------------------------------------ 
 # Boxplot  
   output$plot1 <- renderPlotly({
@@ -430,7 +471,7 @@ output$spiderPlot <- renderPlotly({
   
   
 #-----------------------------------------------------------------------------------------------
-#upset plot 
+#CVD network plot 
   
   output$CVDnetwork <- renderVisNetwork({
     st <- df_sub() %>%
