@@ -2,7 +2,8 @@
 title: "DIG Report"
 author: "Mihir Chachar & Riya Veer"
 date: "2025-11-28"
-output: github_document
+runtime: shiny
+output: html_document
 ---
 
 ```{r}
