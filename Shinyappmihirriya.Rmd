@@ -79,14 +79,17 @@ library(visNetwork)
 ```
 
 ```{r}
+
+# reading the provided dig.csv file
 df <- read.csv("DIG.csv") %>%
   janitor::clean_names()
 
-
+# selecting the desired variables from the trial data
 df <- df %>%
   select(id, trtmt, age, race, sex, ejf_per, chestx, bmi, klevel, creat, digdoser, elevjvp, pedema, restdys, exertdys, actlimit, pulcong, heartrte, diabp, sysbp, prevmi, angina, diabetes, hyperten, diguse, diuretk, diuret, ksupp, aceinhib, nitrates, hydral, vasod, digdose, cvd, whf, mi, uang, strk, sva, vena, crev, ocvd, rinf, oth, hosp, hospdays, nhosp, death, deathday) %>%
-  
-  mutate(
+
+#mutate the selected variables into character, factor & numeric    
+  mutate(                      
     id = as.character(id),
     trtmt = as.factor(trtmt),
     age = as.numeric(age),
@@ -137,7 +140,7 @@ df <- df %>%
     death = as.factor(death),
     deathday = as.numeric(deathday))
 
-
+# mutate the factor variables into their appropriate labels
 df <- df %>%
   mutate(
     Treatment = factor(trtmt, levels = c(0, 1), labels = c("Placebo", "Digoxin")),
@@ -174,7 +177,8 @@ df <- df %>%
     Other_noncardiac = factor(oth, levels = c(0, 1), labels = c("No", "Yes")),
     Hospitalization = factor(hosp, levels = c(0, 1), labels = c("No", "Yes")),
     Death = factor(death, levels = c(0, 1), labels = c("Alive", "Dead"))) %>%
-  rename(
+# Renaming the variables for clear indication
+   rename(
     ID = id,
     Age = age,
     Prescribed_dose = digdose,
@@ -191,6 +195,7 @@ df <- df %>%
     )
 
 # ------------------------------------------------------------------------------------------------------------------
+
 # starting with the shiny app development
 
 library(shinydashboard)
@@ -207,12 +212,12 @@ df <- df %>%
     Pulmonary_congestion = factor(pulcong, levels = c(0, 1, 2, 3), labels = c("Normal", "Mild", "Moderate", "Severe"))
   )
 
-
-
 #-------------------------------------------------------------------------------------------------------------------
+
 # Adding ui to the shiny app
 ui <- dashboardPage(
-  dashboardHeader(title = "Digitalis Randomized, Double-blind, Multicenter Trial", titleWidth = 550), # trial title is given to the shiny dashboard header
+# trial's title is given to the shiny dashboard header  
+  dashboardHeader(title = "Digitalis Randomized, Double-blind, Multicenter Trial", titleWidth = 550), 
   
   
 #Two side bar is created main and explore
@@ -220,57 +225,73 @@ ui <- dashboardPage(
     sidebarMenu(
       menuItem("Main", tabName = "Main", icon = icon("dashboard")),
       menuItem("Explore", tabName = "Explore", icon = icon("chart-bar"))),
+
+# File upload function added to the side bar      
+    fileInput("file1", "Choose a File"), verbatimTextOutput("file1_contents"), 
     
-    fileInput("file1", "Choose a File"), verbatimTextOutput("file1_contents"), # File upload function added to the side bar
-    
-    
+# adding select input for placebo and digoxin under treatment label   
     selectInput(inputId = "Treatment", label = "Select Participants Treatment", choices = c("Placebo", "Digoxin"), multiple = TRUE),
-    
+
+# adding radio buttons for gender    
     radioButtons(inputId = "Sex", label = "Participant's Gender", choices = c("Male", "Female")),
-    
+
+# adding slider for age    
     sliderInput(inputId = "Age", "Participant's Age:", min = 18, max = 95, value = c(20, 30)),
-    
+
+# adding check boxes for various cardiovascular symptoms    
     checkboxGroupInput("checkGroup", label = h3("Cardiovascular Symptoms"), choices = list("ElevatedJVP" = 1, "Pedema" = 2, "Dyspnea_at_rest" = 3, "Dyspnea_on_exertion"= 4, "Action_limitation" = 5, "Pulmonary_congestion" = 6)),
     
     hr(), fluidRow(column(3, verbatimTextOutput("value"))),
-    
+
+# adding download button to download the data     
     downloadButton("downloadData", "Download DIG")), #download button for dig data
+
 #----------------------------------------------------------------------------------------------------------------------
+
 # Dashboard --> Main page, added 2 summary table  
   dashboardBody(
     tabItems(
       tabItem(tabName = "Main",
                fluidRow(
-                
+
+# adding patients demographics to the summary table                                 
                  box(width = 12, title = "Trial Data with Participant's Demographics", collapsible = TRUE, status = "warning", solidHeader = TRUE, dataTableOutput("table1")),
                  
+# adding cv symptoms and death status to the cv conditions table                 
                  box(width = 12, title = "Cardiovascular conditions of Participants", collapsible = TRUE, status = "warning", solidHeader = TRUE, dataTableOutput("table2"))
       )
     ),
+
 #---------------------------------------------------------------------------------------------------------------------
+
 # Dashboard --> Explore page, added multiple plots and a table
     tabItem(tabName = "Explore",
             fluidRow(
+
+# Adding all the numeric variables to this summary table to display their mean, median, sd, max, and min                            
               box(width = 6, title = "Summary", collapsible = TRUE, solidHeader = TRUE, status = "primary", tableOutput("SummaryTable")),
               
-              
+# Adding heat map             
               
               box(width = 6, title = "Interative Heatmap", collapsible = TRUE, solidHeader = TRUE, status = "primary", plotlyOutput("corrplot", height = "550px")),
               
+# adding box plot to show correlation between CVD status and prescribed drug dose              
               
+              box(width = 5, title = "Prescribed Dose", collapsible = TRUE, status = "warning", solidHeader = TRUE, plotlyOutput("plot1")),
               
-              box(width = 5, title = "Box Plot", collapsible = TRUE, status = "warning", solidHeader = TRUE, plotlyOutput("plot1")),
-              
-              
+# adding barplot to show correlation between the cardiovacular symptoms and severity and their count              
               
               box(width = 5, title = "Cardiovascular Symptoms", collapsible = TRUE, status = "primary", solidHeader = TRUE, plotlyOutput("barPlot")),
               
+# adding CVD interactive network using visNetwork library, it shows status of cvd and how many patients are on which drugs
               
               box(width = 6, title = "CVD-Drug Network", collapsible = TRUE, status = "primary", solidHeader = TRUE, visNetworkOutput("CVDnetwork", height = "500px")),
               
+# adding violin plot to show gender vise segregation of BP, Ejection fraction, and HR
               
               box(width = 5, title = "Violin Plot", collapsible = TRUE, status = "primary", solidHeader = TRUE, plotlyOutput("violinPlot")),
               
+# adding stacked bar plot for each CV condition and death;alive count
               
               box(width = 5, title = "Death corelation", collapsible = TRUE, status = "primary", solidHeader = TRUE, plotlyOutput("stackedbarPlot"),  height = "500px")
               )
