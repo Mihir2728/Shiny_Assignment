@@ -15,7 +15,6 @@ if (!require("reshape2")) install.packages("reshape2")
 if (!require("DT")) install.packages("DT")
 if (!require("plotly")) install.packages("plotly")
 if (!require("visNetwork")) install.packages("visNetwork")
-if (!require("rsconnect")) install.packages("rsconnect")
 
 library(tidyverse)
 library(janitor)
@@ -26,12 +25,6 @@ library(reshape2)
 library(DT)
 library(plotly)
 library(visNetwork)
-library(rsconnect)
-
-rsconnect::setAccountInfo(name='1kxoci-dr0mihir-chachar', token='EAF0D0B975ED744BE94F791CD965345A', secret='CYT22m8dTPhbuqYwr32yCk5MRzb4hh7qbfT9jSek')
-
-library(rsconnect)
-    rsconnect::deployApp('/Users/drmihirchachar/shiny_git/Shiny_Assignment')
     
 
 ```
