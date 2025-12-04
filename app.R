@@ -549,12 +549,3 @@ output$barPlot <- renderPlotly({
   })
 }
 shinyApp(ui = ui, server = server)
-
-
-
-
-
-
-
-
-```
